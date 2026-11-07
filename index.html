@@ -8,9 +8,30 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ID-Tag 2.0 · 船舶缆绳管理原型 v0.21</title>
+<style>
+#app-loading{position:fixed;inset:0;z-index:2000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;background:#fff;color:#0a1f38;font-family:system-ui,-apple-system,sans-serif;text-align:center}
+#app-loading .spinner{width:32px;height:32px;border:3px solid #dce5ee;border-top-color:#0a1f38;border-radius:50%;animation:loading-spin .8s linear infinite}
+#app-loading p{margin:0;color:#56697c;font-size:14px;line-height:1.5}#app-loading button{padding:10px 20px;border:0;border-radius:8px;background:#0a1f38;color:#fff;font-size:14px}html.app-ready #app-loading{display:none}@keyframes loading-spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){#app-loading .spinner{animation:none}}
+</style>
 <link rel="stylesheet" href="./css/app.css">
 </head>
 <body>
+<div id="app-loading" role="status" aria-live="polite">
+  <span class="spinner" aria-hidden="true"></span>
+  <strong>正在加载 ID-Tag</strong>
+  <p id="app-loading-message">首次打开需要加载演示资料，请稍候</p>
+  <button id="app-loading-retry" type="button" hidden>重新加载</button>
+</div>
+<script>
+(function(){
+  var message = document.getElementById('app-loading-message');
+  var retry = document.getElementById('app-loading-retry');
+  function showRetry(text){ message.textContent = text; retry.hidden = false; }
+  retry.addEventListener('click', function(){ location.reload(); });
+  window.setTimeout(function(){ if(!document.documentElement.classList.contains('app-ready')) showRetry('加载时间较长，请检查网络后重试。'); }, 30000);
+  window.addEventListener('error', function(event){ if(event.target && event.target.id === 'app-script') showRetry('加载失败，请检查网络后重试。'); }, true);
+})();
+</script>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -859,7 +880,7 @@
   </aside>
 </div>
 
-<script defer src="./js/app.js"></script>
+<script id="app-script" defer src="./js/app.js"></script>
 <script defer src="./js/update.js"></script>
 </body>
 </html>

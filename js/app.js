@@ -3819,3 +3819,5 @@
     go(h, {force:true});
   }
 })();
+
+document.documentElement.classList.add('app-ready');
