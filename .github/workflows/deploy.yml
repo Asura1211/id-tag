@@ -31,3 +31,11 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           printf '%s\n' "$SERVER_HOST_KEY" > ~/.ssh/known_hosts
           ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=20 idtag-deploy@111.229.206.70 "deploy $GITHUB_SHA"
+      - name: Verify public release
+        run: |
+          set -eu
+          curl --fail --silent --show-error --retry 3 --max-time 45 https://nfc.hitlcj.top/version.json -o /tmp/idtag-version.json
+          python3 -c 'import json,os; assert json.load(open("/tmp/idtag-version.json"))["commit"] == os.environ["GITHUB_SHA"]'
+          curl --fail --silent --show-error --retry 3 --max-time 60 https://nfc.hitlcj.top/ -o /tmp/idtag-index.html
+          test "$(sha256sum index.html | cut -d' ' -f1)" = "$(sha256sum /tmp/idtag-index.html | cut -d' ' -f1)"
+          curl --fail --silent --show-error --retry 3 --max-time 30 https://nfc.hitlcj.top/sw.js | grep -F "$GITHUB_SHA" > /dev/null
