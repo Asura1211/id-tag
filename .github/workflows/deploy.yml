@@ -1,0 +1,33 @@
+name: Check and deploy ID-Tag
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: idtag-production
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Check static files
+        run: |
+          node --check js/app.js
+          node --check js/update.js
+          node --check sw.js
+          python3 tests/check_static.py
+      - name: Deploy exact commit
+        env:
+          DEPLOY_KEY: ${{ secrets.IDTAG_DEPLOY_KEY }}
+          SERVER_HOST_KEY: ${{ vars.IDTAG_HOST_KEY }}
+        run: |
+          set -eu
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$SERVER_HOST_KEY" > ~/.ssh/known_hosts
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=20 idtag-deploy@111.229.206.70 "deploy $GITHUB_SHA"
