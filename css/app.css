@@ -681,7 +681,6 @@ html{color-scheme:light}body{background:#E8EFF4;font-size:16px}button,input,text
   body{overflow:hidden}
   .stage{height:100svh;height:100dvh;display:flex;flex-direction:column;align-items:stretch;gap:0}
   .device{height:auto;min-height:0;flex:1 1 0}
-  .mobile-demo-toggle{display:block;flex:0 0 44px;min-height:44px;background:#E7EFF5;color:var(--navy-800);border-top:1px solid var(--line);font-size:13px;font-weight:650}
   .notes{display:none}
   .notes.mobile-open{display:block;position:fixed;inset:0;z-index:120;background:var(--bg);padding:16px 20px calc(24px + env(safe-area-inset-bottom,0px));border:0;overflow:auto}
   .mobile-demo-back{display:flex;margin-bottom:20px}

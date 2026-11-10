@@ -1,6 +1,6 @@
 (function () {
   if (!('serviceWorker' in navigator)) return;
-  let updating = false;
+  let hadController = !!navigator.serviceWorker.controller;
   let banner;
   function showUpdate(registration) {
     if (!registration.waiting || !navigator.serviceWorker.controller || banner) return;
@@ -12,7 +12,6 @@
       const action = event.target.dataset.update;
       if (action === 'later') { banner.remove(); banner = null; }
       if (action === 'now' && registration.waiting) {
-        updating = true;
         event.target.disabled = true;
         event.target.textContent = '更新中…';
         registration.waiting.postMessage({ type: 'SKIP_WAITING' });
@@ -21,21 +20,33 @@
     document.body.appendChild(banner);
   }
   navigator.serviceWorker.addEventListener('controllerchange', function () {
-    if (updating) window.location.reload();
+    if (hadController) window.location.reload();
+    hadController = true;
   });
   window.addEventListener('load', function () {
     navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then(function (registration) {
-      showUpdate(registration);
-      registration.addEventListener('updatefound', function () {
+      function watchInstalling() {
         const worker = registration.installing;
         if (worker) worker.addEventListener('statechange', function () {
           if (worker.state === 'installed') showUpdate(registration);
         });
-      });
-      registration.update().catch(function () {});
+      }
+      function checkForUpdate() {
+        showUpdate(registration);
+        registration.update().then(function () { showUpdate(registration); }).catch(function () {});
+      }
+      registration.addEventListener('updatefound', watchInstalling);
+      watchInstalling();
+      checkForUpdate();
       document.addEventListener('visibilitychange', function () {
-        if (document.visibilityState === 'visible') registration.update().catch(function () {});
+        if (document.visibilityState === 'visible') checkForUpdate();
       });
+      window.addEventListener('pageshow', checkForUpdate);
+      window.addEventListener('focus', checkForUpdate);
+      window.addEventListener('online', checkForUpdate);
+      window.setInterval(function () {
+        if (document.visibilityState === 'visible') checkForUpdate();
+      }, 60000);
     }).catch(function (error) { console.warn('Offline support unavailable:', error); });
   });
 })();
