@@ -1,6 +1,6 @@
 # Git 与部署
 
-仓库：`Asura1211/id-tag`，私有。线上：https://nfc.hitlcj.top/。向 main 推送会自动发布，其他分支不会。拥有 main 写权限的人可以触发生产发布；授权协作者前请考虑这一点。仓库中的案例证书和示例信息只用于演示。
+仓库：`Asura1211/id-tag`，公开。线上：https://nfc.hitlcj.top/。向 main 推送会自动发布，其他分支不会。拥有 main 写权限的人可以触发生产发布；授权协作者前请考虑这一点。仓库中的案例证书和示例信息只用于演示。
 
 让 AI 执行的示例：
 
@@ -12,7 +12,7 @@
 
 ## 自动发布原理
 
-GitHub Actions 在 main 推送时检查文件，用独立密钥连接服务器的 `idtag-deploy` 受限账号，请求发布本次完整 commit。服务器校验目标是当前 main、取得全局发布锁、拉取私有仓库并创建只读静态版本，保留旧版，切换站点后验证；失败时恢复上一个版本。服务器发布脚本为 root 管理的 `/usr/local/sbin/idtag-release`，不是直接执行仓库里的任意脚本。版本写入 `/version.json`，可与 Actions 的 commit 对照。PWA 缓存版本由发布脚本根据 commit 注入，无需手工修改。
+GitHub Actions 在 main 推送时检查文件，用独立密钥连接服务器的 `idtag-deploy` 受限账号，请求发布本次完整 commit。服务器校验目标是当前 main、取得全局发布锁、拉取仓库并创建只读静态版本，保留旧版，切换站点后验证；失败时恢复上一个版本。服务器发布脚本为 root 管理的 `/usr/local/sbin/idtag-release`，不是直接执行仓库里的任意脚本。版本写入 `/version.json`，可与 Actions 的 commit 对照。PWA 缓存版本由发布脚本根据 commit 注入，无需手工修改。
 
 站点域名 `nfc.hitlcj.top`；Nginx 站点配置 `/etc/nginx/sites-available/nfc.hitlcj.top`，站点的 Nginx 配置对脚本和样式启用 gzip 压缩；静态入口 `/var/www/idtag-live`，版本目录 `/var/www/idtag-releases`。证书续期的 webroot 仍为 `/var/www/idtag-pwa`，不可随意删除。部署依赖服务器出站 GitHub SSH、GitHub 只读 deploy key、Actions secret `IDTAG_DEPLOY_KEY` 和仓库变量 `IDTAG_HOST_KEY`。绝不将密钥写入仓库。服务器执行入口及权限必须由服务器管理员维护。
 
