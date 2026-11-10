@@ -7,7 +7,7 @@
 <link rel="apple-touch-icon" href="./icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ID-Tag 2.0 · 船舶缆绳管理原型 v0.21</title>
+<title>ID-Tag 2.0 · 船舶缆绳管理原型 v0.31</title>
 <style>
 #app-loading{position:fixed;inset:0;z-index:2000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;background:#fff;color:#0a1f38;font-family:system-ui,-apple-system,sans-serif;text-align:center}
 #app-loading .spinner{width:32px;height:32px;border:3px solid #dce5ee;border-top-color:#0a1f38;border-radius:50%;animation:loading-spin .8s linear infinite}
@@ -97,7 +97,6 @@
             <div class="cache-banner" id="homeCache" hidden>本船档案尚未缓存。请联网获取资料，或切回已缓存船舶。</div>
 
             <div class="v6-cutoff" id="homeCutoff"></div>
-            <p style="margin:8px 0;padding:10px 12px;background:#fff4dc;color:#754a00;border-radius:8px;font-size:13px">演示版：所有数据和操作均为模拟，刷新后重置，请勿录入真实数据。</p>
             <div class="v6-home-modules" id="homeModules"></div>
             <div hidden aria-hidden="true"><div id="safeBar"><span class="badge"></span><span id="safeTitle"></span><span id="safeSub"></span></div></div>
             <div class="sec">
@@ -169,8 +168,8 @@
         <section class="screen" data-s="detail">
   <div class="appbar"><button class="back" data-act="backlist" aria-label="返回缆绳列表"><svg class="ico"><use href="#i-left"/></svg></button><h1 id="dTitle">艏左主缆</h1><button class="iconbtn" data-v11="share" aria-label="分享缆绳档案"><svg class="ico"><use href="#i-share"/></svg></button></div>
   <div class="scroll" style="padding-top:0">
-    <div class="v11-rope-photo"><button class="iconbtn v13-photo-control" data-v12="rope-photo-options" aria-label="管理缆绳照片"><svg class="ico" aria-hidden="true"><use href="#i-camera"/></svg></button><img id="ropeHeroPhoto" alt="缆绳照片"><span class="v11-photo-label" id="ropePhotoLabel">示例照片</span><span class="v12-photo-cache">已缓存</span><span class="v11-photo-tag" id="dHeroTag">LS-2025-0007</span></div>
-<div class="v19-date-card"><div class="v19-date-heading"><span class="main" id="dStatus"><i class="sig ok"></i>正常</span></div><div class="v19-dates"><div><em>常规检查日期</em><button class="v21-date-value" id="dRoutineDue" data-v21="edit-date" data-date-type="routine" aria-label="设置常规检查日期"></button><span id="routineDateState"></span></div><div><em>详细检查日期</em><button class="v21-date-value" id="dDetailedDue" data-v21="edit-date" data-date-type="detailed" aria-label="设置详细检查日期"></button><span id="detailedDateState"></span></div><div><em>证书到期日期</em><button class="v21-date-value" id="dCertExpiry" data-v21="edit-date" data-date-type="certificate" aria-label="设置证书到期日期"></button><span id="certificateDateState"></span></div></div><span id="dLast" hidden></span></div>
+    <div class="v11-rope-photo"><button class="iconbtn v13-photo-control" data-v12="rope-photo-options" aria-label="管理缆绳照片"><svg class="ico" aria-hidden="true"><use href="#i-camera"/></svg></button><img id="ropeHeroPhoto" alt="缆绳照片"><span class="v11-photo-label" id="ropePhotoLabel">示例照片</span><span class="v11-photo-tag" id="dHeroTag">LS-2025-0007</span></div>
+<div class="v19-date-card"><div class="v19-date-heading"><span class="main" id="dStatus"><i class="sig ok"></i>正常</span></div><div class="v19-dates"><div><em>常规检查日期</em><button class="v21-date-value" id="dRoutineDue" data-v21="edit-date" data-date-type="routine" aria-label="设置常规检查日期"></button></div><div><em>详细检查日期</em><button class="v21-date-value" id="dDetailedDue" data-v21="edit-date" data-date-type="detailed" aria-label="设置详细检查日期"></button></div><div><em>证书到期日期</em><button class="v21-date-value" id="dCertExpiry" data-v21="edit-date" data-date-type="certificate" aria-label="设置证书到期日期"></button></div></div><span id="dLast" hidden></span></div>
 
     <div class="tabs"><button class="on" data-tab="info">信息</button><button data-tab="cert">规格</button><button data-tab="log">履历</button></div>
     <div class="panel on" data-panel="info"><div class="kv-list">
@@ -197,7 +196,6 @@
   </div>
   <div class="footbar"><button class="btn primary" data-act="newrecord"><svg class="ico sm"><use href="#i-plus"/></svg>新增记录</button></div>
   <input id="ropeUploadInput" type="file" accept="image/*" hidden>
-  <input id="ropeCameraInput" type="file" accept="image/*" capture="environment" hidden>
 </section>
 
 
@@ -244,7 +242,7 @@
             <div class="tip" style="margin-top:16px"><svg class="ico sm"><use href="#i-alert"/></svg>
               <span>录入内容须与产品证书一致；NFC 编号一绳一码，与产品编号一一对应，不可重复。</span></div>
           </div>
-          <div class="footbar"><button class="btn primary" data-act="saverope">保存并写入标签</button></div>
+          <div class="footbar"><button class="btn primary" data-act="saverope">保存档案</button></div>
         </section>
 
         <!-- ============ 记录概览 ============ -->
@@ -306,6 +304,11 @@
             <div id="partBody"></div>
 
 
+            <fieldset class="v5-radio-group" id="areaMeasurements" hidden>
+              <legend>本区域量化指标 <span class="v5-required">必填</span></legend>
+              <p class="hint2" id="areaMetricHint">按实测百分比填写。无变化时填 0。</p>
+              <div class="qmat" id="areaMeasurementFields"></div>
+            </fieldset>
             <div class="v5-area-eval"><label class="field-label" for="areaEval">本区域评价 <span class="v5-required">选填</span></label>
               <textarea class="ta" id="areaEval" placeholder="描述本区域的外观、损伤或维护结果"></textarea>
               <p class="v5-error" id="areaError" role="alert" hidden></p></div>
@@ -349,8 +352,7 @@
     <button class="iconbtn" data-v5="add-todo" aria-label="新增待办"><svg class="ico"><use href="#i-plus"/></svg></button>
   </div></div>
   <div class="scroll tabbed">
-    <div class="v5-month-heading"><span id="monthCaption">2026 年 11 月</span><span>所示月份记录</span></div>
-    <div class="v5-month-stats" id="monthStats"></div>
+    <div class="v21-event-scope" id="eventStateFilters" role="group" aria-label="提醒分类"></div>
     <div id="alertCold" class="cache-banner" hidden>本船提醒尚未缓存，请联网更新档案。</div>
     <div class="cal">
       <div class="cal-hd"><button class="cal-arrow" data-act="calprev" aria-label="上个月"><svg class="ico sm"><use href="#i-left"/></svg></button>
@@ -358,7 +360,7 @@
       <div class="cal-week"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
       <div class="cal-grid v5-grid" id="calGrid"></div>
 
-      <div class="v21-event-scope" id="eventStateFilters" role="group" aria-label="事件状态筛选"></div><div class="v6-calendar-legend" id="calendarLegend" aria-label="日历图形图例"></div>
+      <div class="v6-calendar-legend" id="calendarLegend" aria-label="日历图形图例"></div>
     </div>
     <div class="v6-periodbar"><label class="sr-only" for="periodSelect">事项范围</label><select id="periodSelect"><option value="today">今日事项</option><option value="week">本周事项</option><option value="month">本月事项</option></select><span id="periodCount"></span></div>
     <div id="alertList"></div>
@@ -382,7 +384,7 @@
         </section>
 
         <section class="screen" data-s="me">
-  <div class="appbar"><h1>我的</h1></div>
+  <div class="appbar"><h1>我的</h1><span class="pill neu">v0.31 原型</span></div>
   <div class="scroll tabbed">
     <div class="card pad"><div class="usercard">
       <div class="avatar" id="meAvatar">张</div>
@@ -406,7 +408,7 @@
     </div>
     <div class="sec"><div class="sec-h"><h2>设置</h2></div><div class="card v5-list">
       <button class="rowact" data-v6="language"><span class="lb">语言 / Language</span><span class="rv" id="languageValue">中文</span><svg class="ico sm"><use href="#i-right"/></svg></button>
-      <button class="rowact" data-v5="reminder-settings"><span class="lb">提醒设置</span><span class="rv">方式与时间</span><svg class="ico sm"><use href="#i-right"/></svg></button>
+      <button class="rowact" data-v5="reminder-settings"><span class="lb">提醒设置</span><span class="rv">事件开关</span><svg class="ico sm"><use href="#i-right"/></svg></button>
     </div></div>
     <button class="btn ghost" id="switchAccountButton" data-v5="switch-account" style="margin-top:24px"><svg class="ico sm"><use href="#i-user"/></svg>切换账号</button><button class="btn ghost v6-logout" data-v6="logout" id="logoutButton">退出登录</button>
   </div>
@@ -430,17 +432,6 @@
             <div class="disp" id="dispRow">
               <button class="on">继续使用</button><button>加强监控</button>
               <button>端对端调头</button><button>裁剪</button><button>退役更换</button>
-            </div>
-
-            <div id="quantBox" style="display:none">
-              <div class="sec-h" style="margin-top:18px"><h2>量化指标（详细检查）</h2></div>
-              <div class="qmat">
-                <div class="qrow"><span class="k">直径减小</span><span class="v">3 %</span></div>
-                <div class="qrow"><span class="k">断丝</span><span class="v">0 %</span></div>
-                <div class="qrow"><span class="k">截面积损失</span><span class="v">2 %</span></div>
-                <div class="qrow"><span class="k">捻距长度变化</span><span class="v">1 %</span></div>
-                <div class="qrow"><span class="k">剩余强力</span><span class="v">94 %</span></div>
-              </div>
             </div>
 
     <div id="overallFields"></div><p id="overallError" class="v5-error" role="alert" hidden></p>
@@ -477,7 +468,7 @@
 <section class="screen" data-s="recordview"><div class="appbar"><button class="back" data-v11="record-back" aria-label="返回"><svg class="ico"><use href="#i-left"/></svg></button><h1 id="recordViewTitle">缆绳记录总览</h1></div><div class="scroll" id="recordOverview"></div></section>
 
 <section class="screen" data-s="profile"><div class="appbar"><button class="back" data-nav="me" aria-label="返回我的"><svg class="ico"><use href="#i-left"/></svg></button><h1 id="profileTitle">编辑个人信息</h1></div>
-  <div class="scroll"><div class="v12-avatar-editor"><button id="profileAvatar" class="v12-profile-avatar" data-v12="avatar" aria-label="更换头像"></button><button class="v12-avatar-link" data-v12="avatar" id="profileAvatarText">更换头像</button><input type="file" id="avatarFileInput" accept="image/*" hidden></div>
+  <div class="scroll"><div class="v12-avatar-editor"><button id="profileAvatar" class="v12-profile-avatar" data-v12="avatar" aria-label="更换头像"></button><button class="v12-avatar-link" data-v12="avatar" id="profileAvatarText">更换头像</button><button class="v12-avatar-link" data-device-photo="avatar">拍摄头像</button><input type="file" id="avatarFileInput" accept="image/*" hidden></div>
     <form id="profileForm" novalidate><div id="profileFields"></div><p id="profileError" class="v5-error" role="alert" hidden></p><p class="v12-profile-note" id="profileHelp">船队名称由所属团队带出，联系方式用于团队成员联系。</p></form>
   </div><div class="footbar"><button class="btn primary" id="profileSave" data-v12="save-profile" disabled>保存个人信息</button></div>
 </section>
@@ -522,6 +513,7 @@
         <button class="bop danger" data-act="bulkdel"><svg class="ico"><use href="#i-trash"/></svg>删除</button>
       </div>
 
+      <input id="devicePhotoInput" type="file" accept="image/*" capture="environment" hidden>
       <div class="scrim" id="scrim"></div>
 
       <!-- 扫描 -->
@@ -536,8 +528,6 @@
           <p class="scan-sub" id="scanSub">将手机背面贴近缆绳上的 ID-Tag，保持 2–3 秒</p>
           <div class="scan-actions" id="scanActions">
             <button class="btn primary" data-act="doscan">开始扫描</button>
-            <button class="btn ghost" style="font-size:13.5px" data-act="scanfail">演示：识别失败</button>
-            <button class="btn ghost" style="font-size:13.5px" data-act="scancold">演示：档案未下载</button>
           </div>
         </div>
       </div>
@@ -643,6 +633,15 @@
       </div>
 
       <!-- 筛选 -->
+      <div class="sheet" id="sheetCertFilters">
+        <div class="handle"></div>
+        <div class="sh-head"><h3>筛选</h3><span class="sub" id="certFilterSummary" aria-live="polite">未设置条件</span></div>
+        <div class="sh-body" id="certFilterGroups"></div>
+        <div class="v20-sheet-footer cert-filter-footer">
+          <button type="button" class="btn ghost" data-cert-filter="reset">重置</button>
+          <button type="button" class="btn primary" data-cert-filter="apply" id="certFilterApply"></button>
+        </div>
+      </div>
       <div class="sheet" id="sheetFilter">
         <div class="handle"></div>
         <div class="sh-head"><h3>筛选</h3><span class="sub" id="fSum">未设置条件</span></div>
@@ -731,7 +730,7 @@
       <!-- 添加缆绳 -->
       <div class="sheet" id="sheetAdd">
         <div class="handle"></div>
-        <div class="sh-head"><h3>添加缆绳</h3><span class="sub">导入后写入标签</span></div>
+        <div class="sh-head"><h3>添加缆绳</h3><span class="sub">使用已有标签编号</span></div>
         <div class="sh-body">
           <div class="opt-list">
             <button class="opt-item" data-act="manualadd">
@@ -784,25 +783,23 @@
   <label class="field-label" for="joinCode">邀请码</label><input class="form-edit" id="joinCode" autocomplete="off" autocapitalize="characters" maxlength="8" placeholder="输入 6 位邀请码">
   <p class="v5-error" id="joinError" role="alert" hidden></p><p class="hint2" id="joinHint"></p><button class="btn primary" data-v5="join-team">确认加入</button>
 </div></div>
-<div class="sheet" id="sheetReminderTypes"><div class="handle"></div><div class="sh-head"><h3>提醒设置</h3><span class="sub">为各类事项设置默认提醒，可单独调整一项</span></div><div class="sh-body"><div class="v5-reminder-types" id="reminderTypes"></div><p class="hint2">本原型模拟设置反馈，不会向设备发送真实通知。</p></div></div>
+<div class="sheet" id="sheetReminderTypes"><div class="handle"></div><div class="sh-head"><h3>提醒设置</h3><span class="sub">按事件类型开启或关闭提醒</span></div><div class="sh-body"><p class="v26-reminder-note">通知方式跟随手机系统设置。</p><div class="v5-reminder-types" id="reminderTypes"></div><p class="hint2">本原型模拟设置反馈，不会向设备发送真实通知。</p></div></div>
 <div class="sheet" id="sheetReminder"><div class="handle"></div><div class="sh-head"><h3 id="reminderTitle">提醒设置</h3><span class="sub" id="reminderSub"></span></div><div class="sh-body">
-  <fieldset class="v5-radio-group"><legend>提醒方式</legend><div class="v5-radio-options">
-    <label><input type="radio" name="reminderMode" value="vibrate">震动</label><label><input type="radio" name="reminderMode" value="ring">铃声</label><label><input type="radio" name="reminderMode" value="silent">静音</label>
-  </div></fieldset>
-  <fieldset class="v5-radio-group"><legend>提醒时间</legend><div class="v5-radio-options">
-    <label><input type="radio" name="reminderTime" value="before">提前一天</label><label><input type="radio" name="reminderTime" value="same">当天</label>
-  </div></fieldset>
+  <label class="v26-switch-row v26-single-switch">
+    <span class="v26-switch-copy"><b>提醒此事件</b><small>开启后将此事件纳入提醒。</small></span>
+    <span class="v26-switch"><input type="checkbox" role="switch" name="eventReminderEnabled" aria-label="提醒此事件" checked><span aria-hidden="true"></span></span>
+  </label>
   <button class="btn primary" data-v5="save-reminder">保存提醒设置</button>
 </div></div>
 <div class="sheet" id="sheetTodo"><div class="handle"></div><div class="sh-head"><h3>新增待办</h3><span class="sub">添加到所选日期，并设置提醒</span></div><div class="sh-body">
   <label class="field-label" for="todoTitle">待办事项</label><input id="todoTitle" class="form-edit" maxlength="60" placeholder="例如：核对本船缆绳证书">
   <label class="field-label" for="todoDate">日期</label><input id="todoDate" class="form-edit" type="date" value="2026-11-03">
   <label class="field-label" for="todoNote">备注（选填）</label><textarea id="todoNote" class="ta" maxlength="300" placeholder="补充需要提醒的内容"></textarea>
-  <fieldset class="v5-radio-group"><legend>提醒方式</legend><div class="v5-radio-options">
-    <label><input type="radio" name="todoMode" value="vibrate">震动</label><label><input type="radio" name="todoMode" value="ring" checked>铃声</label><label><input type="radio" name="todoMode" value="silent">静音</label>
-  </div></fieldset>
-  <fieldset class="v5-radio-group"><legend>提醒时间</legend><div class="v5-radio-options"><label><input type="radio" name="todoTime" value="before">提前一天</label><label><input type="radio" name="todoTime" value="same" checked>当天</label></div></fieldset>
-<label class="field-label">附件（选填）</label><div class="v18-file-buttons"><button type="button" data-v18="photo-attachment"><svg class="ico"><use href="#i-camera"/></svg>照片</button><button type="button" data-v18="file-attachment"><svg class="ico"><use href="#i-doc"/></svg>文件</button></div><input id="todoPhotoInput" type="file" accept="image/*" multiple hidden><input id="todoFileInput" type="file" multiple hidden><div id="todoAttachmentsList"></div><p id="todoAttachmentFeedback" role="status"></p>
+  <label class="v26-switch-row v26-single-switch">
+    <span class="v26-switch-copy"><b>待办提醒</b><small>开启后将此待办纳入提醒。</small></span>
+    <span class="v26-switch"><input type="checkbox" role="switch" name="todoReminderEnabled" aria-label="待办提醒" checked><span aria-hidden="true"></span></span>
+  </label>
+<label class="field-label">附件（选填）</label><div class="v18-file-buttons"><button type="button" data-v18="photo-attachment"><svg class="ico"><use href="#i-camera"/></svg>相册</button><button type="button" data-device-photo="todo">拍照</button><button type="button" data-v18="file-attachment"><svg class="ico"><use href="#i-doc"/></svg>文件</button></div><input id="todoPhotoInput" type="file" accept="image/*" multiple hidden><input id="todoFileInput" type="file" multiple hidden><div id="todoAttachmentsList"></div><p id="todoAttachmentFeedback" role="status"></p>
   <p id="todoError" class="v5-error" role="alert" hidden></p><button class="btn primary" data-v5="save-todo">保存待办</button>
 </div></div>
 <div class="sheet" id="sheetHistory"><div class="handle"></div><div class="sh-head"><h3 id="historyTitle">审核记录</h3><span class="sub" id="historySub"></span></div><div class="sh-body v5-history-detail" id="historyBody"></div></div>
@@ -824,10 +821,9 @@
   <div class="v10-assign-footer"><p id="assignChanges" role="status" aria-live="polite"></p><div class="v5-two"><button class="btn ghost" data-demo="closesheet" id="assignCancel">取消</button><button class="btn primary" data-v10="save-assign" id="assignSave" disabled>保存分配</button></div></div>
 </div>
 
-<div class="sheet" id="sheetRopeCamera"><div class="handle"></div><div class="sh-head"><h3>拍摄缆绳照片</h3><span class="sub" id="cameraRope"></span></div><div class="sh-body"><img class="v11-camera-preview" id="cameraPreview" alt="拍摄预览"><p class="hint2">可模拟拍摄，或在支持的设备上使用相机选择照片。</p><button class="btn primary" data-v11="capture-photo">模拟拍摄并保存</button><button class="btn ghost" style="margin-top:10px" data-v11="native-camera">使用设备相机</button></div></div>
 <div class="sheet" id="sheetRopeShare"><div class="handle"></div><div class="sh-head"><h3>分享缆绳档案</h3><span class="sub">多选分享内容，履历详情按团队权限查看</span></div><div class="sh-body"><div class="v18-share-options" id="shareOptions"></div><div class="v11-share-preview" id="sharePreview"></div><button class="btn primary" data-v11="copy-share">复制分享摘要</button><button class="btn ghost" data-v11="system-share" style="margin-top:10px">系统分享</button></div></div>
 
-<div class="sheet" id="sheetRopePhotoOptions"><div class="handle"></div><div class="sh-head"><h3>管理缆绳照片</h3><span class="sub" id="photoOptionsRope"></span></div><div class="sh-body"><img id="photoOptionsPreview" class="v12-photo-options-preview" alt="当前缆绳照片"><div class="opt-list"><button class="opt-item" data-v11="camera"><span class="oc"><svg class="ico"><use href="#i-camera"/></svg></span><span class="lb"><b>拍摄照片</b><span>模拟拍摄或使用设备相机</span></span><svg class="ico sm"><use href="#i-right"/></svg></button><button class="opt-item" data-v12="rope-upload"><span class="oc"><svg class="ico"><use href="#i-plus"/></svg></span><span class="lb"><b>上传图片</b><span>从手机相册或本地文件选择</span></span><svg class="ico sm"><use href="#i-right"/></svg></button></div></div></div>
+<div class="sheet" id="sheetRopePhotoOptions"><div class="handle"></div><div class="sh-head"><h3>管理缆绳照片</h3><span class="sub" id="photoOptionsRope"></span></div><div class="sh-body"><img id="photoOptionsPreview" class="v12-photo-options-preview" alt="当前缆绳照片"><div class="opt-list"><button class="opt-item" data-v11="camera"><span class="oc"><svg class="ico"><use href="#i-camera"/></svg></span><span class="lb"><b>拍摄照片</b><span>打开设备相机</span></span><svg class="ico sm"><use href="#i-right"/></svg></button><button class="opt-item" data-v12="rope-upload"><span class="oc"><svg class="ico"><use href="#i-plus"/></svg></span><span class="lb"><b>上传图片</b><span>从手机相册或本地文件选择</span></span><svg class="ico sm"><use href="#i-right"/></svg></button></div></div></div>
 <div class="sheet" id="sheetMemberInfo"><div class="handle"></div><div class="sh-head"><h3 id="memberInfoTitle">成员信息</h3></div><div class="sh-body" id="memberInfoBody"></div></div>
 
 <div class="sheet" id="sheetRopeDates"><div class="handle"></div><div class="sh-head"><h3>设置档案日期</h3></div><div class="sh-body"><p class="hint2">各日期当天显示待检，未处理的次日转为超期。缺失日期保持待设置，不推定证书有效期。</p><label class="field-label" for="routineDateInput">常规检查日期</label><input class="form-edit" type="date" id="routineDateInput"><label class="field-label" for="detailedDateInput">详细检查日期（选填）</label><input class="form-edit" type="date" id="detailedDateInput"><label class="field-label" for="certificateDateInput">证书到期日期（选填）</label><input class="form-edit" type="date" id="certificateDateInput"><p class="v5-error" id="ropeDatesError" role="alert" hidden></p><button class="btn primary" style="margin-top:18px" data-v19="save-dates">保存日期</button></div></div>
@@ -858,9 +854,9 @@
   <button class="mobile-demo-toggle" id="demoToggle" data-demo="shownotes" aria-controls="demoNotes" aria-expanded="false">演示控制与设计说明</button>
   <aside class="notes" id="demoNotes" aria-label="设计说明与演示控制">
     <button class="mobile-demo-back btn ghost" data-demo="hidenotes">返回 App 原型</button>
-    <span class="version">交互原型 v0.21</span>
+    <span class="version">交互原型 v0.31</span>
     <h1>船舶缆绳管理</h1>
-    <p class="lede">在 v0.20 基础上收起证书卡片操作并增加批量下载、标签与到期日；档案日期直接点击设置，补充意见反馈与提醒状态筛选，使用事件改为橙色空心圆。</p>
+    <p class="lede">同一天显示四个事件图标时，日历分两行排列，每行两个。</p>
     <div class="design-changes" aria-label="主要设计改动">
       <p><b>截至今日</b>　首页依次显示记录同步中心、记录审核和提醒，统计截至示例今日仍未完成的数量。NFC 保留底部中央入口。</p>
       <p><b>分类更易辨认</b>　超期红色实心方形、待检黄色三角、待办紫色实心圆、审核蓝色菱形、维护青色空心菱形、使用橙色空心圆、事故玫红感叹号、检查灰色勾。</p>
@@ -870,12 +866,12 @@
     <div class="ctrl">
       <div class="line"><span class="lb">模拟网络<small>先离线保存，再恢复网络观察自动同步。</small></span><button class="switch on" id="swNet" data-act="togglenet" aria-label="切换模拟网络" aria-pressed="true"><i></i></button></div>
       <div class="line"><span class="lb">账号角色</span><span class="mini"><button data-act="role" data-v="admin" id="rbAdmin" class="on">大副</button><button data-act="role" data-v="crew" id="rbCrew">船员</button></span></div>
-      <div class="line"><span class="lb">异常场景</span><span class="mini"><button data-act="scanfail2">扫描失败</button><button data-demo="showcold">档案未缓存</button><button data-demo="syncfail">模拟同步失败</button><button data-act="empty">暂无待办</button></span></div>
+      <div class="line"><span class="lb">异常场景</span><span class="mini"><button data-demo="syncfail">模拟同步失败</button><button data-act="empty">暂无待办</button></span></div>
       <div class="line"><span class="lb">快速查看</span><span class="mini"><button data-act="jump" data-to="home">首页</button><button data-act="jump" data-to="detail">档案</button><button data-act="jump" data-to="photo">拍照</button><button data-act="jump" data-to="sync">同步</button><button data-act="jump" data-to="review">审核</button><button data-act="jump" data-to="team">团队</button></span></div>
       <div class="line"><span class="lb">新流程</span><span class="mini"><button data-v5="demo-unjoined">船员加入前</button><button data-v6="guest">未登录</button><button data-v6="language">中文 / English</button><button data-v7="help">帮助与联系</button><button data-v11="demo-basic">船员基本权限</button><button data-v11="grant-team">大副授权入口</button><button data-v5="switch-account">切换账号</button></span></div>
 <div class="line"><button class="btn ghost" data-act="reset">重置演示</button></div>
     </div>
-    <details><summary>如何走一遍核心流程</summary><p>底部中央 NFC → 开始扫描 → 查看缆绳档案 → 新增记录 → 常规检查 → 确认信息 → 新增损伤记录 → 选择程度并添加模拟照片 → 区域照片与评价选填 → 五区域总览与总体评估 → 保存到本地。切换网络可验证待同步与重试，待审核记录获准后才进入 FIRM 同步队列。</p></details>
+    <details><summary>如何走一遍核心流程</summary><p>底部中央 NFC → 开始扫描 → 查看缆绳档案 → 新增记录 → 常规检查 → 确认信息 → 新增损伤记录 → 选择程度并拍摄现场照片 → 区域照片与评价选填 → 五区域总览与总体评估 → 保存到本地。切换网络可验证待同步与重试，待审核记录获准后才进入 FIRM 同步队列。</p></details>
     <p class="prototype-note">官网、微信及 FIRM 链接尚未提供，联系页标为待补充。证书日期按要求补为 2026-04-07，到期日和线密度等缺失值保持待补充；船队 A/B 与完整手机号为演示资料；证书下载使用“案例资料”中的原文件，保留原格式与内容，关联仅作原型演示。所有操作均为本页模拟。今日按设备日期更新，既有记录日期保持不变；第二艘船演示未缓存档案。刷新页面恢复示例数据。</p>
   </aside>
 </div>
